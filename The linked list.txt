@@ -1,0 +1,246 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct List{
+    int data;
+    struct List *next;
+};
+
+struct List *CreateList(struct List *L,int n,int *a);
+int ListInsert(struct List *L,int i,int e);
+int display(struct List *L);
+int ListInsert(struct List *L,int i,int e);
+int List_delete(struct List *L,int i,int *e);
+int Get_data(struct List *L,int i,int *e);
+int Reverse(struct List *L);
+
+struct List *CreateList(struct List *L,int n,int *a)
+{
+    struct List *p;
+    int i;
+    L=(struct List *)malloc (sizeof(struct List));
+    if(L==NULL)
+    {
+        printf("Allocation space failed\n");
+    }
+    L->next=NULL;
+	for(i=n;i>0;--i)
+	{
+		p=(struct List *)malloc(sizeof(struct List));
+		if(L==NULL)
+		{
+			printf("Allocation space failed\n");
+		}
+		p->data=*(a+i-1);
+		p->next=L->next;
+		L->next=p;
+	}  
+    return L;
+}
+int display(struct List *L)
+{
+    struct List *p;
+	if(L==NULL)
+	{
+		printf("list is empty .");
+		return 0;
+	}
+    p=L;
+    p=p->next;
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+	return 1;
+}
+int ListInsert(struct List *L,int i,int e)
+{
+    int j=0;
+    struct List *p=L,*s;
+	if(L==NULL)
+	{
+		printf("list is empty!!");
+		system("pause");
+		return 0;
+	}
+    while(p&&j<i-1)
+    {
+        p=p->next;
+        j++;
+    }
+    if(!p||j>i-1)
+	{
+		printf("location is unlegal !");
+		system("pause");
+		return 0;
+	}
+        
+    s=(struct List *)malloc(sizeof(struct List));
+    s->data=e;
+    s->next=p->next;
+    p->next=s;
+	printf("InsertSuccess !");
+	system("pause");
+    return 1;
+}
+int List_delete(struct List *L,int i,int *e)
+{
+    int j=0;
+    struct List *p=L,*q;
+	if(L==NULL)
+	{
+		printf("list is empty!!");
+		system("pause");
+		return 0;
+	}
+    while(p->next&&j<i-1)
+    {
+        p=p->next;
+        j++;
+    }
+    if(!(p->next)||j>i-1)
+	{
+		printf("\"i\" is not exist !");
+		system("pause");
+		return 0;
+	}
+        
+    q=p->next;
+    p->next=q->next;
+    *e=p->data;
+    free(q);
+    return 1;
+}
+int Get_data(struct List *L,int i,int *e,int *sign)
+{
+    int j=1;
+    struct List *p=L->next;
+	if(L==NULL)
+	{
+		printf("list is empty !!");
+		system("pause");
+		return 0;
+	}
+    while(p&&j<i)
+    {
+        p=p->next;
+        j++;
+    }
+    if(!p||j>i)
+    {
+        printf("\"i\" is not exist !\n");
+		*sign=1;
+		system("pause");
+        return 0;
+    }
+    *e=p->data;
+    return 1;
+}
+int Reverse(struct List *L)
+{
+    struct List *p,*q;
+	if(L==NULL)
+	{
+		printf("list is empty!!");
+		return 0;
+	}
+    p=L->next;
+    L->next=NULL;
+    while(p!=NULL)
+    {
+        q=p;
+        p=p->next;
+        q->next=L->next;
+        L->next=q;
+    }
+	printf("SUCCESS !");
+	system("pause");
+	return 1;
+}
+int Setnull(struct List *L)
+{
+	struct List *p,*q;
+	if(L==NULL)
+	{
+		printf("List is empty !!");
+		system("pause");
+		return 0;
+	}
+
+	p=L->next;
+	while(p)
+	{
+		q=p->next;
+		free(p);
+		p=q;
+	}
+	L=NULL;
+	display(L);
+	printf("\n");
+	return 1;
+}
+int main()
+{
+    struct List *L=NULL;
+    int a[50],n,i,k,sign=0;
+    int e;
+    while(1)
+    {
+        system("cls");
+		printf("                           This Is A Linked List\n\n");
+		printf("----------------------* 1.  Creat a linked list   *-------------\n");
+		printf("----------------------* 2.   Insert a value       *-------------\n");
+		printf("----------------------* 3.   Delete a value       *-------------\n");
+	    printf("----------------------* 4.     Get a value        *-------------\n");
+	    printf("----------------------* 5.Reverse the linked list *-------------\n");
+		printf("----------------------* 6.   Exit and free list   *-------------\n");
+		printf("The Linked List is :");
+		display(L);
+		printf("\nPlease input a number to execute function :");
+        scanf("%d",&k);
+        switch(k)
+        {
+            case 1:
+				printf("Please input a value as the number of linked list :");
+                scanf("%d",&n);
+                printf("Please input %d values :",n);
+                for(i=0;i<n;i++)
+                    scanf("%d",a+i);
+                L=CreateList(L,n,a);
+                break;
+          case 2:
+                printf("Please input a value where you want to insert :");
+                scanf("%d",&i);
+                printf("Please input a value what you want to insert :");
+                scanf("%d",&e);
+                ListInsert(L,i,e);
+                break;
+			case 3:
+				printf("Please input a value where you want to delete :");
+				scanf("%d",&i);
+				List_delete(L,i,&e);
+				break;
+			case 4:
+				printf("Please input a value where you want to get :");
+				scanf("%d",&i);
+				Get_data(L,i,&e,&sign);
+				if(sign==1)
+				{
+					sign=0;
+					break;
+				}
+				else
+					printf("The value you want to get is %d",e);
+				system("pause");
+				break;
+			case 5:
+				Reverse(L);		
+				break;
+			case 6:
+				system("cls");
+				Setnull(L);
+				return 0;
+        }
+    }
+   return 0;
+}
